@@ -1,24 +1,26 @@
 <?php
 
-define('LETTERS_TO_MATCH', 'abcdefghijklmnopqrstuvwxyz');
-
 function isPangram(string $sentence): bool
 {
-    if (empty($sentence = trim($sentence))) {
-        return false;
-    }
+    $lettersToMatch = 'abcdefghijklmnopqrstuvwxyz';
 
     $matchedLetters = [];
 
-    foreach (str_split(LETTERS_TO_MATCH) as $letter) {
-        $pattern = sprintf('/[%s]/i', $letter);
+    $sentence = preg_replace("/[^{$lettersToMatch}]/i", '', trim($sentence));
+
+    if (empty($sentence)) {
+        return false;
+    }
+
+    foreach (str_split($lettersToMatch) as $letter) {
         $matches = [];
 
-        if (preg_match($pattern, $sentence, $matches)) {
+        if (preg_match("/[{$letter}]/i", $sentence, $matches)) {
             if (! in_array($matches[0], $matchedLetters, true)) {
-                $matchedLetters[] = $matches[0];
+                $matchedLetters[] = strtolower($matches[0]);
             }
         }
     }
-    return implode('', $matchedLetters) === LETTERS_TO_MATCH;
+
+    return implode('', $matchedLetters) === $lettersToMatch;
 }
